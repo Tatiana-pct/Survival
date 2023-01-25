@@ -6,7 +6,7 @@ public class PickUpBehaviour : MonoBehaviour
 {   
     [SerializeField]private Inventory _inventory;
     [SerializeField]private Animator _animator;
-    [SerializeField]MoveBehaviour _moveBehaviour;
+    [SerializeField]MoveBehaviour _moveBehaviour; 
 
     private Item _currentItem;
     
