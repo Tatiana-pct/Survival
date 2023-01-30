@@ -1,3 +1,5 @@
+//ce script gere l'inventaire
+//this script manages the inventory
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -40,11 +42,15 @@ public class Inventory : MonoBehaviour
         RefreshContent();
     }
 
+    //methode qui  va peupler le contenue reel de l'inventaire
+    //method that will populate the actual content of the inventory
     private void RefreshContent()
     {
         for (int i = 0; i < _content.Count; i++)
         {
-            _inventorySlotParent.GetChild(i).GetChild(0).GetComponent<Image>().sprite = _content[i].Visual;
+            Slot currentSlot = _inventorySlotParent.GetChild(i).GetComponent<Slot>();
+            currentSlot.Item = _content[i];
+            currentSlot.ItemVisual.sprite = _content[i].Visual;
         }
     }
 

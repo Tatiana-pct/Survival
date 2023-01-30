@@ -1,4 +1,5 @@
 //Script responsable du ramassage des Objs 
+//Script responsible for collecting Objs
 
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ public class PickUpItem : MonoBehaviour
     [SerializeField]Inventory _inventory;
     [SerializeField]PickUpBehaviour  _playerPickupBehaviour;
     [SerializeField]LayerMask _layerMask;
-    [SerializeField] GameObject _pickUpTxt;
+    [SerializeField]GameObject _pickUpTxt;
 
     // Update is called once per frame
     void Update()
