@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    [SerializeField] ItemData _item;
+    [SerializeField] ItemsData _item;
 
-    public ItemData Itemdata { get => _item; set => _item = value; }
+    public ItemsData Itemdata { get => _item; set => _item = value; }
 }

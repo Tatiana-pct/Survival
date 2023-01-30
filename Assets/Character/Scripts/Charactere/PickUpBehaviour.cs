@@ -12,6 +12,12 @@ public class PickUpBehaviour : MonoBehaviour
     
    public void DoPickUp(Item item)
     {
+        if(_inventory.IsFull())
+        {
+            Debug.Log("Inventory Full, can't pick up : " + item.name);
+            return;
+        }
+
         _currentItem = item;
         //jouer l'animation de ramassage
         _animator.SetTrigger("Pickup");
