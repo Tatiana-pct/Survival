@@ -13,9 +13,21 @@ public class Tooltip : MonoBehaviour
     [SerializeField] private Text _contentField;
     [SerializeField] private LayoutElement _layoutElement;
     [SerializeField] private int _maxCharacter;
+    [SerializeField] private RectTransform _rectTransform;
 
     //[SerializeField]
-   
+
+    private void Update()
+    {
+        Vector2 mousePosition = Input.mousePosition;
+
+        float pivotX = mousePosition.x/ Screen.width;
+        float pivoty = mousePosition.y/ Screen.width;
+        _rectTransform.pivot = new Vector2(pivotX, pivoty);
+
+        transform.position = mousePosition;
+
+    }
 
     public void SetText(string content,string header = "")
     {

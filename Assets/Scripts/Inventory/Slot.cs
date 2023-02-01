@@ -3,8 +3,8 @@
 
 
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 
 public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
@@ -27,6 +27,11 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public void OnPointerExit(PointerEventData eventData)
     {
         TooltipSystem._instance.Hide();
+    }
+
+    public void ClickOnSlot()
+    {
+        Inventory._instance.OpenActionPanel(Item, transform.position);
     }
 
 }
