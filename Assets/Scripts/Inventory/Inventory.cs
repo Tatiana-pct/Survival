@@ -2,6 +2,7 @@
 //this script manages the inventory
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Inventory : MonoBehaviour
 {
@@ -21,9 +22,12 @@ public class Inventory : MonoBehaviour
     [SerializeField] GameObject _destroyItemButton;
     [SerializeField] Transform _dropPoint;
 
+    [Header("Library Equipement References")]
+    [SerializeField] EquipementLibrary _equipementLibrary;
+
     const int InventorySize = 24;
 
-    private ItemsData _ItemCurrentlySelected;
+    private ItemsData _itemCurrentlySelected;
 
     public static Inventory _instance;
 
@@ -92,7 +96,7 @@ public class Inventory : MonoBehaviour
     //Method to open and close the action panel
     public void OpenActionPanel(ItemsData item, Vector3 slotPosition)
     {
-        _ItemCurrentlySelected = item;
+        _itemCurrentlySelected = item;
 
         if (item == null)
         {
@@ -125,14 +129,14 @@ public class Inventory : MonoBehaviour
     public void CloseActionPanel()
     {
         _actionPanel.SetActive(false);
-        _ItemCurrentlySelected = null;
+        _itemCurrentlySelected = null;
     }
 
     //Methode qui gere le btn Use du panel d'action de l'inventaire
     //Method that manages the btn Use of the inventory action panel
     public void UseActionButton()
     {
-        print("Use Item : " + _ItemCurrentlySelected.Name);
+        print("Use Item : " + _itemCurrentlySelected.Name);
         CloseActionPanel();
     }
 
@@ -140,7 +144,16 @@ public class Inventory : MonoBehaviour
     //Method that manages the Equip btn of the inventory action panel
     public void EquipeActionButton()
     {
-        print("Aquipe Item : " + _ItemCurrentlySelected.Name);
+        print("Equipe Item : " + _itemCurrentlySelected.Name);
+        EquipementLibraryItem equipementLibraryItem = _equipementLibrary.Content.Where(elem => elem.ItemsData == _itemCurrentlySelected).First();
+        if(equipementLibraryItem != null)
+        {
+            equipementLibraryItem.ItemPrefab.SetActive(true);
+        }
+        else
+        {
+            Debug.LogError("Equipement : " + _itemCurrentlySelected.Name + " non existant dans dans la librairie des équipements");
+        }
         CloseActionPanel();
     }
 
@@ -148,9 +161,9 @@ public class Inventory : MonoBehaviour
     //Method that manages the btn Drop of the inventory action panel
     public void DropActionButton()
     {
-        GameObject instantiatedItem = Instantiate(_ItemCurrentlySelected.Prefab);
+        GameObject instantiatedItem = Instantiate(_itemCurrentlySelected.Prefab);
         instantiatedItem.transform.position = _dropPoint.position;
-        _content.Remove(_ItemCurrentlySelected);
+        _content.Remove(_itemCurrentlySelected);
         RefreshContent();
     }
 
@@ -158,7 +171,7 @@ public class Inventory : MonoBehaviour
     //Method that manages the btn Destroy of the inventory action panel
     public void DestroyActionButton()
     {
-        _content.Remove(_ItemCurrentlySelected);
+        _content.Remove(_itemCurrentlySelected);
         RefreshContent();
         CloseActionPanel();
     }

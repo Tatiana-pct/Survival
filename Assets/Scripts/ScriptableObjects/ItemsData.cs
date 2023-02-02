@@ -9,6 +9,15 @@ public enum ItemType
     Consumable
 }
 
+public enum EquipementType
+{
+    Head,
+    Chest,
+    hands,
+    legs,
+    foots
+}
+
 [CreateAssetMenu(fileName = "Item", menuName = "Items_new item")]
 public class ItemsData : ScriptableObject
 {
@@ -19,6 +28,7 @@ public class ItemsData : ScriptableObject
     [SerializeField] Sprite _visual;
     [SerializeField] GameObject _prefab;
     [SerializeField] ItemType _itemType;
+    [SerializeField] EquipementType _equipementType;
 
     public Sprite Visual { get => _visual; set => _visual = value; }
     public string Description { get => _description; set => _description = value; }
