@@ -29,7 +29,7 @@ public class PickUpBehaviour : MonoBehaviour
     public void AddItemToInventory()
     {
         //ajouter l'item a l'inventaire du joueur
-        _inventory.AddIten(_currentItem.Itemdata);
+        _inventory.AddItem(_currentItem.Itemdata);
         //detruit le game object 
         Destroy(_currentItem.gameObject);
         //réinitialise la variable courante

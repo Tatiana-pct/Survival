@@ -15,7 +15,7 @@ public enum EquipementType
     Chest,
     hands,
     legs,
-    foots
+    feets
 }
 
 [CreateAssetMenu(fileName = "Item", menuName = "Items_new item")]
