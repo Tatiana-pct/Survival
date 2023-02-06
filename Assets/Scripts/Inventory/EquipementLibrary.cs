@@ -14,7 +14,9 @@ public class EquipementLibrary : MonoBehaviour
 {
     [SerializeField] ItemsData _itemsData;
     [SerializeField] GameObject _itemPrefab;
+    [SerializeField] GameObject[] _elementsToDisable;
 
     public ItemsData ItemsData { get => _itemsData; set => _itemsData = value; }
     public GameObject ItemPrefab { get => _itemPrefab; set => _itemPrefab = value; }
+    public GameObject[] ElementsToDisable { get => _elementsToDisable; set => _elementsToDisable = value; }
 }

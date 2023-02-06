@@ -35,4 +35,5 @@ public class ItemsData : ScriptableObject
     public string Name { get => _name; set => _name = value; }
     public ItemType ItemType { get => _itemType; set => _itemType = value; }
     public GameObject Prefab { get => _prefab; set => _prefab = value; }
+    public EquipementType EquipementType { get => _equipementType; set => _equipementType = value; }
 }
