@@ -9,6 +9,9 @@ using UnityEngine.UI;
 
 public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    [Header("Script ItemActionSystem References")]
+    [SerializeField] ItemsActionSystem _itemsActionSystem;
+
     [SerializeField] ItemsData _item;
     [SerializeField] Image _itemVisual;
 
@@ -31,7 +34,7 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void ClickOnSlot()
     {
-        Inventory._instance.OpenActionPanel(Item, transform.position);
+        _itemsActionSystem.OpenActionPanel(Item, transform.position);
     }
 
 }
