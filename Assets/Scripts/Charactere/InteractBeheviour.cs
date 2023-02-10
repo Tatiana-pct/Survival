@@ -6,11 +6,16 @@ public class InteractBeheviour : MonoBehaviour
 {   
     [SerializeField]private Inventory _inventory;
     [SerializeField]private Animator _animator;
-    [SerializeField]MoveBehaviour _moveBehaviour; 
-    [SerializeField]GameObject _pickAxeVisual; 
+    [SerializeField]MoveBehaviour _moveBehaviour;
 
+    [Header("Tools Visual")]
+    [SerializeField]GameObject _pickAxeVisual;
+    [SerializeField]GameObject _axeVisual;
+
+    private Vector3 _spawnItemOffset = new Vector3(0,0.5f,0);
     private Item _currentItem;
     private Harvestable _currentHarvestable;
+    private Tool _currentTool;
 
     #region DoPickUp
     //Methode permettant de collecter des items
@@ -39,31 +44,44 @@ public class InteractBeheviour : MonoBehaviour
     {
         //active le visuel de l'outil de farm
         //activate the visual of the farming tool
-        _pickAxeVisual.SetActive(true);
+        _currentTool = harvestable.Tool;
+        EnabledToolGameObjectFromEnum(_currentTool);
+
         //variable temporaire
         //temporary variable
         _currentHarvestable = harvestable;
+
         //jouer l'animation de farm
         //play farm animation
         _animator.SetTrigger("Harvest");
+
         // bloquer le deplacement pendant le ramassage
         // block movement while picking up
         _moveBehaviour.CanMove = false;
     }
     #endregion
 
-    #region BreakHarvestable
-    //Methode de destruction des collectible de farm
-    //Method of destroying farm collectibles
-    public void BreakHarvestable()
+    #region BreakHarvestable (couroutine)
+    //couroutine call from harvesting animation
+    //couroutine call from harvesting animation
+    IEnumerator BreakHarvestable()
     {
+        if(_currentHarvestable.DisableKinematicOnHarvest)
+        {
+            Rigidbody rigidbody = _currentHarvestable.gameObject.GetComponent<Rigidbody>();
+            rigidbody.isKinematic = false;
+            rigidbody.AddForce(new Vector3(750f,750f,0), ForceMode.Impulse);  
+        }
+
+        yield return new WaitForSeconds(_currentHarvestable.DestroyDelay);
+
         for (int i = 0; i < _currentHarvestable.HarvestableItem.Length; i++)
         {
             Ressouces ressouces = _currentHarvestable.HarvestableItem[i];
-            for (int y = 0; y < Random.Range(ressouces.MinAmoutSpwane,(float) ressouces.MaxAmoutSpwane); y++)
+            if(Random.Range(1,101) <= ressouces.DropChance)
             {
-                GameObject instatiatedressouce = GameObject.Instantiate(ressouces.ItemData.Prefab);
-                instatiatedressouce.transform.position = _currentHarvestable.transform.position;
+                GameObject instatiatedressouce = Instantiate(ressouces.ItemData.Prefab);
+                instatiatedressouce.transform.position = _currentHarvestable.transform.position + _spawnItemOffset;
             }
         }
         Destroy(_currentHarvestable.gameObject);
@@ -88,12 +106,30 @@ public class InteractBeheviour : MonoBehaviour
     {
         //desactive le visuel de l'outil de farm
         //disable the visual of the farming tool
-        _pickAxeVisual.SetActive(false);
+        EnabledToolGameObjectFromEnum(_currentTool, false);
         //debloque le deplacement
         //unblock the movement
         _moveBehaviour.CanMove = true;
 
     }
+    #endregion
+
+    #region EnabledToolGameObjectFromEnum
+    private void EnabledToolGameObjectFromEnum(Tool toolType, bool enabled = true)
+    {
+        switch (toolType)
+        {
+            case Tool.PickAxe:
+                _pickAxeVisual.SetActive(enabled);
+                break;
+            case Tool.Axe:
+                _axeVisual.SetActive(enabled);  
+                break;
+            default:
+                break;
+        }
+    }
+
     #endregion
 
 }
