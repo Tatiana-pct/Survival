@@ -6,6 +6,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+using static Inventory;
 
 public class Recipe : MonoBehaviour
 {
@@ -15,6 +17,8 @@ public class Recipe : MonoBehaviour
     [SerializeField] Button _craftButton;
     [SerializeField] Sprite _canBuildIcon;
     [SerializeField] Sprite _cantBuildIcon;
+    [SerializeField] Color _missingColor;
+    [SerializeField] Color _avaibleColor;
 
     private RecipeData _currentRecipe;
     // Start is called before the first frame update
@@ -38,24 +42,44 @@ public class Recipe : MonoBehaviour
 
         _craftableImage.sprite = recipe.CraftableItem.Visual;
 
+        //Slot permettant l'affichage du tooltip lorsqu'on lui passe un item
+        //Slot allowing the display of the tooltip when an item is passed to it
+        _craftableImage.transform.parent.GetComponent<Slot>().Item = recipe.CraftableItem;
+
         bool canCraft = true;
 
-        List<ItemsData> inventoryCopy = new List<ItemsData>(Inventory._instance.GetContent());
         for (int i = 0; i < recipe.RequiredItems.Length; i++)
         {
-            ItemsData requiredItem = recipe.RequiredItems[i]; 
-            
-            if(inventoryCopy.Contains(requiredItem))
+            //récupère tous les éléments nécéssaire pour la recette
+            //get all the elements needed for the recipe
+            GameObject requiredItemGameObject = Instantiate(_elementRequiredPrefab, _elementRequiredParent);
+            Image requiredItemGameObjectImage = requiredItemGameObject.GetComponent<Image>();
+            ItemsData requiredItem = recipe.RequiredItems[i]._itemsData;
+            ElementRequired elementRequired = requiredItemGameObjectImage.GetComponent<ElementRequired>();
+
+            //Slot permettant l'affichage du tooltip lorsqu'on lui passe un item
+            //Slot allowing the display of the tooltip when an item is passed to it
+            requiredItemGameObject.GetComponent<Slot>().Item = requiredItem;
+
+            //si la copie d'inventaire contient l'élément requis one le retire de l'inventaire et on passe au suivant
+            //if the inventory copy contains the required item one removes it from the inventory and we move on to the next one
+            ItemInInventory itemInInventoryCopy = Inventory._instance.GetContent().Where(elem => elem._itemsData == requiredItem).FirstOrDefault();
+
+            if (itemInInventoryCopy != null && itemInInventoryCopy.count>= recipe.RequiredItems[i].count)
             {
-                inventoryCopy.Remove(requiredItem);
+                requiredItemGameObjectImage.color = _avaibleColor;
             }
             else
             {
+                
+                requiredItemGameObjectImage.color = _missingColor;
                 canCraft = false;
             }
 
-            GameObject requiredItemGameObject = Instantiate(_elementRequiredPrefab, _elementRequiredParent);
-            requiredItemGameObject.transform.GetChild(0).GetComponent<Image>().sprite = recipe.RequiredItems[i].Visual;
+            //Configure le visuel de l'élément requis
+            //Configure the visual of the required element
+            elementRequired.ElementImage.sprite = recipe.RequiredItems[i]._itemsData.Visual;
+            elementRequired.ElementCountTxt.text = recipe.RequiredItems[i].count.ToString();
         }
         //Gere l'affichage de Bouton
         //Manage Button display
@@ -78,11 +102,15 @@ public class Recipe : MonoBehaviour
     #endregion
 
 
-    #region Craftitem
-    //Methode permettant de crafter la recette
-    //Method to craft the recipe
-    public void Craftitem()
+    #region CraftItem
+    //Methode qui ajoute l'élement crafter a l'inventaire
+    //Method that adds the crafter item to the inventory
+    public void CraftItem()
     {
+        for (int i = 0; i < _currentRecipe.RequiredItems.Length; i++)
+        {
+            Inventory._instance.RemoveItem(_currentRecipe.RequiredItems[i]._itemsData, _currentRecipe.RequiredItems[i].count);
+        }
         Inventory._instance.AddItem(_currentRecipe.CraftableItem);
     }
     #endregion

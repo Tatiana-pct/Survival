@@ -14,9 +14,11 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     [SerializeField] ItemsData _item;
     [SerializeField] Image _itemVisual;
+    [SerializeField] Text _countTxt;
 
     public ItemsData Item { get => _item; set => _item = value; }
     public Image ItemVisual { get => _itemVisual; set => _itemVisual = value; }
+    public Text CountTxt { get => _countTxt; set => _countTxt = value; }
 
     public void OnPointerEnter(PointerEventData eventData)
     {

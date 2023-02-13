@@ -3,13 +3,14 @@
 //////////////////////////ScriptableObject from crafting recipes//////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 using UnityEngine;
+using static Inventory;
 
 [CreateAssetMenu(fileName ="Recipe", menuName ="Recipe/New Recipe")]
 public class RecipeData : ScriptableObject
 {
     [SerializeField] ItemsData _craftableItem;
-    [SerializeField] ItemsData[] _requiredItems;
+    [SerializeField] ItemInInventory[] _requiredItems;
 
     public ItemsData CraftableItem { get => _craftableItem; set => _craftableItem = value; }
-    public ItemsData[] RequiredItems { get => _requiredItems; set => _requiredItems = value; }
+    public ItemInInventory[] RequiredItems { get => _requiredItems; set => _requiredItems = value; }
 }

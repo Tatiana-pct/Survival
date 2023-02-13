@@ -27,6 +27,9 @@ public class ItemsData : ScriptableObject
     [SerializeField] string _description;
     [SerializeField] Sprite _visual;
     [SerializeField] GameObject _prefab;
+    [SerializeField] bool _stackable;
+
+
     [SerializeField] ItemType _itemType;
     [SerializeField] EquipementType _equipementType;
 
@@ -36,4 +39,5 @@ public class ItemsData : ScriptableObject
     public ItemType ItemType { get => _itemType; set => _itemType = value; }
     public GameObject Prefab { get => _prefab; set => _prefab = value; }
     public EquipementType EquipementType { get => _equipementType; set => _equipementType = value; }
+    public bool Stackable { get => _stackable; set => _stackable = value; }
 }

@@ -12,6 +12,8 @@ public class CraftingSystem : MonoBehaviour
     [SerializeField] RecipeData[] _availableRecipes;   
     [SerializeField] GameObject _recipeUiPrefab;   
     [SerializeField] Transform _recipesParent;   
+    [SerializeField] KeyCode _openCraftPanelInput;   
+    [SerializeField] GameObject _craftPanel;   
 
     void Start()
     {
@@ -19,8 +21,19 @@ public class CraftingSystem : MonoBehaviour
         
     }
 
+    private void Update()
+    {
+        //Ouvre ou ferme le panel de craft si la player appuie sur le btn
+        //Open or close the craft panel if the player presses the btn
+        if (Input.GetKeyDown(_openCraftPanelInput))
+        {
+            _craftPanel.SetActive(!_craftPanel.activeSelf);
+            UpdateDisplayRecipes();
+        }
+    }
+
     #region UpdateDisplayRecipes
-    private void UpdateDisplayRecipes()
+    public void UpdateDisplayRecipes()
     {
         //Supprime les recettes listées
         foreach ( Transform child in _recipesParent)
