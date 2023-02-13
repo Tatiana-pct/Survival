@@ -60,6 +60,7 @@ public class Inventory : MonoBehaviour
 
     #region AddItem
     //methode ajoutant un item a l'inventaire
+    //method adding an item to the inventory
     public void AddItem(ItemsData item)
     {
         _content.Add(item);
@@ -93,8 +94,18 @@ public class Inventory : MonoBehaviour
     }
     #endregion
 
+    #region GetContent 
+    //Methode verifiant les items requis
+    //Method verifying required items
+    public List<ItemsData> GetContent()
+    {
+        return _content;
+    }
+    #endregion
+
     #region RemoveItem
-    //methode ajoutant un item a l'inventaire
+    //methode supprimant un item a l'inventaire
+    //method deleting an item from the inventory
     public void RemoveItem(ItemsData item)
     {
         _content.Remove(item);
