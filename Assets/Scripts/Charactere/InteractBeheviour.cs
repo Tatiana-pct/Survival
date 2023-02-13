@@ -21,12 +21,22 @@ public class InteractBeheviour : MonoBehaviour
     private Item _currentItem;
     private Harvestable _currentHarvestable;
     private Tool _currentTool;
+    private bool _isBusy;
 
     #region DoPickUp
     //Methode permettant de collecter des items
     //Method to collect items
     public void DoPickUp(Item item)
     {
+        if(_isBusy)
+        {
+            return;
+        }
+        else
+        {
+            _isBusy = true;
+        }
+
         if(_inventory.IsFull())
         {
             return;
@@ -47,6 +57,15 @@ public class InteractBeheviour : MonoBehaviour
     //Method to farm items
     public void DoHarvest(Harvestable harvestable)
     {
+        if (_isBusy)
+        {
+            return;
+        }
+        else
+        {
+            _isBusy = true;
+        }
+
         //active le visuel de l'outil de farm
         //activate the visual of the farming tool
         _currentTool = harvestable.Tool;
@@ -71,11 +90,15 @@ public class InteractBeheviour : MonoBehaviour
     //couroutine call from harvesting animation
     IEnumerator BreakHarvestable()
     {
+        //Permet de désactiver la posibiité d'intéragir avec le Harvestable + d'une fois (passage du layer Harvestable à default)
+        //Allows you to deactivate the possibility of interacting with the Harvestable + once (passage of the Harvestable layer to default)
+        _currentHarvestable.gameObject.layer = LayerMask.NameToLayer("Default");
+
         if(_currentHarvestable.DisableKinematicOnHarvest)
         {
             Rigidbody rigidbody = _currentHarvestable.gameObject.GetComponent<Rigidbody>();
             rigidbody.isKinematic = false;
-            rigidbody.AddForce(new Vector3(750f,750f,0), ForceMode.Impulse);  
+            rigidbody.AddForce(transform.forward *800, ForceMode.Impulse);  
         }
 
         yield return new WaitForSeconds(_currentHarvestable.DestroyDelay);
@@ -115,6 +138,7 @@ public class InteractBeheviour : MonoBehaviour
         //debloque le deplacement
         //unblock the movement
         _moveBehaviour.CanMove = true;
+        _isBusy = false;
 
     }
     #endregion
