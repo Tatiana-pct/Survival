@@ -87,7 +87,6 @@ public class InteractBeheviour : MonoBehaviour
 
     #region BreakHarvestable (couroutine)
     //couroutine call from harvesting animation
-    //couroutine call from harvesting animation
     IEnumerator BreakHarvestable()
     {
         //Permet de désactiver la posibiité d'intéragir avec le Harvestable + d'une fois (passage du layer Harvestable à default)
