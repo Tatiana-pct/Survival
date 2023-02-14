@@ -28,6 +28,7 @@ public class ItemsData : ScriptableObject
     [SerializeField] Sprite _visual;
     [SerializeField] GameObject _prefab;
     [SerializeField] bool _stackable;
+    [SerializeField] int _maxStack;
 
 
     [SerializeField] ItemType _itemType;
@@ -40,4 +41,5 @@ public class ItemsData : ScriptableObject
     public GameObject Prefab { get => _prefab; set => _prefab = value; }
     public EquipementType EquipementType { get => _equipementType; set => _equipementType = value; }
     public bool Stackable { get => _stackable; set => _stackable = value; }
+    public int MaxStack { get => _maxStack; set => _maxStack = value; }
 }

@@ -1,12 +1,12 @@
 //ce script gere l'inventaire
 //this script manages the inventory
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    [Header ("Script Equipement References" )]
+    [Header("Script Equipement References")]
     [SerializeField] Equipement _equipement;
 
     [Header("Script ItemActionSystem References")]
@@ -64,18 +64,49 @@ public class Inventory : MonoBehaviour
     }
 
     #region AddItem
-    //methode ajoutant un item a l'inventaire + stack
-    //method adding an item to the inventoryc + stack
+    //methode ajoutant un item a l'inventaire + stack + limite de stack
+    //method adding an item to the inventoryc + stack + stack limit
     public void AddItem(ItemsData item)
     {
-        ItemInInventory itemInventory = _content.Where(elem => elem._itemsData == item).FirstOrDefault(); 
-        if(itemInventory!= null && item.Stackable)
+        //Recuperation des items dans un tableau
+        //Retrieve items in an array
+        ItemInInventory[] itemInventory = _content.Where(elem => elem._itemsData == item).ToArray();
+
+        //Bool temporaire
+        //temporary Bool
+        bool itemAdded = false;
+
+        //On verifie sur itemIventory n'est pas vide et s'il est stackable
+        //We check if itemIventory is not empty and if it is stackable
+        if (itemInventory.Length > 0 && item.Stackable)
         {
-            itemInventory.count++;
+            //Pour chaque item
+            //For each item
+            for (int i = 0; i < itemInventory.Length; i++)
+            {
+                //S'il est inferieur au stack max
+                //If it is lower than the max stack
+                if (itemInventory[i].count < item.MaxStack)
+                {
+                    //On l'ajoute au stack courant
+                    //Add it to the current stack
+                    itemAdded = true;
+                    itemInventory[i].count++;
+                    break;
+                }
+            }
+            //Si il n'y a pas de place
+            //If there is no space
+            if (!itemAdded)
+            {
+                //On le place dans un nouveau stack
+                //We place it in a new stack
+                _content.Add(new ItemInInventory { _itemsData = item, count = 1 });
+            }
         }
         else
         {
-            _content.Add(new ItemInInventory{_itemsData = item, count = 1 });
+            _content.Add(new ItemInInventory { _itemsData = item, count = 1 });
         }
 
         RefreshContent();
@@ -103,7 +134,7 @@ public class Inventory : MonoBehaviour
             currentSlot.Item = _content[i]._itemsData;
             currentSlot.ItemVisual.sprite = _content[i]._itemsData.Visual;
 
-            if(currentSlot.Item.Stackable)
+            if (currentSlot.Item.Stackable)
             {
                 currentSlot.CountTxt.enabled = true;
                 currentSlot.CountTxt.text = _content[i].count.ToString();
@@ -128,13 +159,14 @@ public class Inventory : MonoBehaviour
     #region RemoveItem
     //methode supprimant un item a l'inventaire
     //method deleting an item from the inventory
-    public void RemoveItem(ItemsData item, int count =1)
+    public void RemoveItem(ItemsData item)
     {
 
         ItemInInventory itemInventory = _content.Where(elem => elem._itemsData == item).FirstOrDefault();
-        if (itemInventory.count > count && item.Stackable)
+
+        if (itemInventory != null && itemInventory.count <1)
         {
-            itemInventory.count -= count;
+            itemInventory.count --;
         }
         else
         {

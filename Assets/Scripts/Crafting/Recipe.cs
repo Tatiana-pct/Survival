@@ -2,11 +2,9 @@
 //////////////////////////Script responsable del'affichge dynamique des recettes////////////////////////////////////////
 //////////////////////////Script responsible for the dynamic display of recipes/////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
 using static Inventory;
 
 public class Recipe : MonoBehaviour
@@ -24,13 +22,13 @@ public class Recipe : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     #region Configure
@@ -61,17 +59,25 @@ public class Recipe : MonoBehaviour
             //Slot allowing the display of the tooltip when an item is passed to it
             requiredItemGameObject.GetComponent<Slot>().Item = requiredItem;
 
-            //si la copie d'inventaire contient l'élément requis one le retire de l'inventaire et on passe au suivant
-            //if the inventory copy contains the required item one removes it from the inventory and we move on to the next one
-            ItemInInventory itemInInventoryCopy = Inventory._instance.GetContent().Where(elem => elem._itemsData == requiredItem).FirstOrDefault();
+            //si l'inventaire contient l'élément requis on le retire de l'inventaire et on passe au suivant
+            //if the inventory contains the required element, remove it from the inventory and move on to the next one
+            ItemInInventory[] itemInInventory = Inventory._instance.GetContent().Where(elem => elem._itemsData == requiredItem).ToArray();
 
-            if (itemInInventoryCopy != null && itemInInventoryCopy.count>= recipe.RequiredItems[i].count)
+            //variable temporaire
+            int totalRequiredItemQuantityInInventory = 0;
+
+            for (int y = 0; y < itemInInventory.Length; y++)
+            {
+                totalRequiredItemQuantityInInventory += itemInInventory[y].count;
+            }
+
+            if (totalRequiredItemQuantityInInventory >= recipe.RequiredItems[i].count)
             {
                 requiredItemGameObjectImage.color = _avaibleColor;
             }
             else
             {
-                
+
                 requiredItemGameObjectImage.color = _missingColor;
                 canCraft = false;
             }
@@ -109,7 +115,11 @@ public class Recipe : MonoBehaviour
     {
         for (int i = 0; i < _currentRecipe.RequiredItems.Length; i++)
         {
-            Inventory._instance.RemoveItem(_currentRecipe.RequiredItems[i]._itemsData, _currentRecipe.RequiredItems[i].count);
+            for (int y = 0; y < _currentRecipe.RequiredItems[i].count; y++)
+            {
+                Inventory._instance.RemoveItem(_currentRecipe.RequiredItems[i]._itemsData);
+
+            }
         }
         Inventory._instance.AddItem(_currentRecipe.CraftableItem);
     }
