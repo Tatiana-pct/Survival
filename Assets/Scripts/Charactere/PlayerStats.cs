@@ -54,7 +54,7 @@ public class PlayerStats : MonoBehaviour
     #region TakeDamage
     //Methode qui gere la prise de dégâts du joueur
     //Method that manages the player's damage taking
-    void TakeDamage(float damage, bool overTime = false)
+    public void TakeDamage(float damage, bool overTime = false)
     {
         if(overTime)
         {
