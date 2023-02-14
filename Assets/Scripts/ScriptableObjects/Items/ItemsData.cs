@@ -22,7 +22,7 @@ public enum EquipementType
 public class ItemsData : ScriptableObject
 {
 
-
+    [Header("Data")]
     [SerializeField] string _name;
     [SerializeField] string _description;
     [SerializeField] Sprite _visual;
@@ -30,7 +30,14 @@ public class ItemsData : ScriptableObject
     [SerializeField] bool _stackable;
     [SerializeField] int _maxStack;
 
+    [Header("Effects")]
+    [SerializeField] float _healthEffect;
+    [SerializeField] float _hungerEffect;
+    [SerializeField] float _thristEffect;
 
+   
+
+    [Header("Type")]
     [SerializeField] ItemType _itemType;
     [SerializeField] EquipementType _equipementType;
 
@@ -42,4 +49,7 @@ public class ItemsData : ScriptableObject
     public EquipementType EquipementType { get => _equipementType; set => _equipementType = value; }
     public bool Stackable { get => _stackable; set => _stackable = value; }
     public int MaxStack { get => _maxStack; set => _maxStack = value; }
+    public float HealthEffect { get => _healthEffect; set => _healthEffect = value; }
+    public float HungerEffect { get => _hungerEffect; set => _hungerEffect = value; }
+    public float ThristEffect { get => _thristEffect; set => _thristEffect = value; }
 }

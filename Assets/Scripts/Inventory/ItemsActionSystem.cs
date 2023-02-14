@@ -1,11 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemsActionSystem : MonoBehaviour
 {
     [Header("Equipement Script References")]
     [SerializeField] Equipement _equipement;
+
+    [Header("Player stats Script References")]
+    [SerializeField] PlayerStats _playerStats;
 
     [Header("Action Panel References")]
     [SerializeField] GameObject _actionPanel;
@@ -72,7 +73,8 @@ public class ItemsActionSystem : MonoBehaviour
     //Method that manages the btn Use of the inventory action panel
     public void UseActionButton()
     {
-        print("Use Item : " + _itemCurrentlySelected.Name);
+        _playerStats.ConsumeItem(ItemCurrentlySelected.HealthEffect, ItemCurrentlySelected.HungerEffect, ItemCurrentlySelected.ThristEffect);
+        Inventory._instance.RemoveItem(ItemCurrentlySelected);
         CloseActionPanel();
     }
     #endregion

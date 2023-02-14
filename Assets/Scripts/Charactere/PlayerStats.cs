@@ -10,6 +10,7 @@ public class PlayerStats : MonoBehaviour
 
     [Header("Health")]
     [SerializeField] float _maxHealth = 100f;
+    [SerializeField] float _currentHealth;
     [SerializeField] Image _healthBarFill;
 
     [Header("HealthDescreas X2")]
@@ -17,18 +18,17 @@ public class PlayerStats : MonoBehaviour
 
     [Header("Hunger")]
     [SerializeField] float _maxHunger = 100f;
+    [SerializeField] float _currentHunger;
     [SerializeField] Image _hungerBarFill;
     [SerializeField] float _hungerDecreaseRate;
 
     [Header("Thirst")]
     [SerializeField] float _maxThirst = 100f;
+    [SerializeField] float _currentThirst;
     [SerializeField] Image _thirstBarFill;
     [SerializeField] float _thirstDecreaseRate;
 
 
-    float _currentHealth;
-    float _currentHunger;
-    float _currentThirst;
 
 
     // Start is called before the first frame update
@@ -75,7 +75,7 @@ public class PlayerStats : MonoBehaviour
     }
     #endregion
 
-    #region UpdateBarFill
+    #region UpdateHealthBarFill
     //Methode qui met a jour le visuel de la bar de vie
     //Method that updates the visual of the life bar
     void UpdateHealthBarFill()
@@ -113,7 +113,32 @@ public class PlayerStats : MonoBehaviour
             TakeDamage((_currentHunger <= 0 && _currentThirst <= 0 ? _healthDecreaseRateForHungerAndThrist * 2 : _healthDecreaseRateForHungerAndThrist), true);
         }
     }
+    #endregion
 
+    #region ConsumeItem
+    //Methode qui gere la consommation d'item
+    //Method that handles item consumption
+    public void ConsumeItem(float health, float hunger, float thirst)
+    {
+        _currentHealth += health;
+        if (_currentHealth > _maxHealth)
+        {
+            _currentHealth = _maxHealth;
+        }
+
+        _currentHunger += hunger;
+        if (_currentHunger > _maxHunger)
+        {
+            _currentHunger = _maxHunger;
+        }
+
+        _currentThirst += thirst;
+        if (_currentThirst > _maxThirst)
+        {
+            _currentThirst = _maxThirst;
+        }
+        UpdateHealthBarFill();
+    }
     #endregion
 
 
