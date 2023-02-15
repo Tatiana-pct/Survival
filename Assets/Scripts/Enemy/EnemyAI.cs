@@ -33,8 +33,13 @@ public class EnemyAI : MonoBehaviour
     private bool _isAttacking;
 
 
+    private void Awake()
+    {
+        Transform playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        _player = playerTransform;
+        _playerStats = playerTransform.GetComponent<PlayerStats>(); 
+    }
 
-    
     void Update()
     {
         //Rayon de detection de l'ennemie

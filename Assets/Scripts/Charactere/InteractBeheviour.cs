@@ -89,29 +89,31 @@ public class InteractBeheviour : MonoBehaviour
     //couroutine call from harvesting animation
     IEnumerator BreakHarvestable()
     {
+        Harvestable currentlyHarvesting= _currentHarvestable;
+
         //Permet de désactiver la posibiité d'intéragir avec le Harvestable + d'une fois (passage du layer Harvestable à default)
         //Allows you to deactivate the possibility of interacting with the Harvestable + once (passage of the Harvestable layer to default)
-        _currentHarvestable.gameObject.layer = LayerMask.NameToLayer("Default");
+        currentlyHarvesting.gameObject.layer = LayerMask.NameToLayer("Default");
 
-        if(_currentHarvestable.DisableKinematicOnHarvest)
+        if(currentlyHarvesting.DisableKinematicOnHarvest)
         {
-            Rigidbody rigidbody = _currentHarvestable.gameObject.GetComponent<Rigidbody>();
+            Rigidbody rigidbody = currentlyHarvesting.gameObject.GetComponent<Rigidbody>();
             rigidbody.isKinematic = false;
             rigidbody.AddForce(transform.forward *800, ForceMode.Impulse);  
         }
 
-        yield return new WaitForSeconds(_currentHarvestable.DestroyDelay);
+        yield return new WaitForSeconds(currentlyHarvesting.DestroyDelay);
 
-        for (int i = 0; i < _currentHarvestable.HarvestableItem.Length; i++)
+        for (int i = 0; i < currentlyHarvesting.HarvestableItem.Length; i++)
         {
-            Ressouces ressouces = _currentHarvestable.HarvestableItem[i];
+            Ressouces ressouces = currentlyHarvesting.HarvestableItem[i];
             if(Random.Range(1,101) <= ressouces.DropChance)
             {
                 GameObject instatiatedressouce = Instantiate(ressouces.ItemData.Prefab);
-                instatiatedressouce.transform.position = _currentHarvestable.transform.position + _spawnItemOffset;
+                instatiatedressouce.transform.position = currentlyHarvesting.transform.position + _spawnItemOffset;
             }
         }
-        Destroy(_currentHarvestable.gameObject);
+        Destroy(currentlyHarvesting.gameObject);
     }
     #endregion
 
