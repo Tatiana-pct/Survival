@@ -44,7 +44,7 @@ public class EnemyAI : MonoBehaviour
     {
         //Rayon de detection de l'ennemie
         //Enemy detection radius
-        if (Vector3.Distance(_player.position, transform.position) < _detectionRaduis)
+        if (Vector3.Distance(_player.position, transform.position) < _detectionRaduis && !_playerStats.IsDead)
         {
             _agent.speed = _chaseSpeed;
             Quaternion rotation = Quaternion.LookRotation(_player.position - transform.position);

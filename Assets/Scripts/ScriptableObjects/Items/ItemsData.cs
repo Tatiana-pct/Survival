@@ -15,7 +15,9 @@ public enum EquipementType
     Chest,
     hands,
     legs,
-    feets
+    feets,
+    weapon
+
 }
 
 [CreateAssetMenu(fileName = "Item", menuName = "Items_new item")]
@@ -35,7 +37,11 @@ public class ItemsData : ScriptableObject
     [SerializeField] float _hungerEffect;
     [SerializeField] float _thristEffect;
 
-   
+    [Header("Armor Stats")]
+    [SerializeField] float _armorPoints;
+
+
+
 
     [Header("Type")]
     [SerializeField] ItemType _itemType;
@@ -52,4 +58,5 @@ public class ItemsData : ScriptableObject
     public float HealthEffect { get => _healthEffect; set => _healthEffect = value; }
     public float HungerEffect { get => _hungerEffect; set => _hungerEffect = value; }
     public float ThristEffect { get => _thristEffect; set => _thristEffect = value; }
+    public float ArmorPoints { get => _armorPoints; set => _armorPoints = value; }
 }

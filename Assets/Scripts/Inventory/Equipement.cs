@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,13 +9,17 @@ public class Equipement : MonoBehaviour
     [Header("Script ItemActionSystem References")]
     [SerializeField] ItemsActionSystem _itemsActionSystem;
 
+    [Header("Script PlayerStats References")]
+    [SerializeField] PlayerStats _playerStats;
+
     [Header("Equipement Panel References")]
     [SerializeField] Image _headSlotImage;
     [SerializeField] Image _chestSlotImage;
     [SerializeField] Image _handsSlotImage;
     [SerializeField] Image _legsSlotImage;
     [SerializeField] Image _feetsSlotImage;
-    
+    [SerializeField] Image _weaponSlotImage;
+
 
     [Header("Button Equipement References")]
     [SerializeField] Button _headDesequipButton;
@@ -25,6 +27,7 @@ public class Equipement : MonoBehaviour
     [SerializeField] Button _handsDesequipButton;
     [SerializeField] Button _legsDesequipButton;
     [SerializeField] Button _feetsDesequipButton;
+    [SerializeField] Button _WeaponDesequipButton;
 
     //Variables permettant de garder un trace des équipements actuels
     //Variables to keep track of current equipment
@@ -33,6 +36,9 @@ public class Equipement : MonoBehaviour
     private ItemsData _equipementHandsItem;
     private ItemsData _equipementLegsItem;
     private ItemsData _equipementFeetItem;
+    private ItemsData _equipementWeaponItem;
+
+    public ItemsData EquipementWeaponItem { get => _equipementWeaponItem; set => _equipementWeaponItem = value; }
 
     #region DisablePreviousEquipedEquipement
     //Methode qui desactive l'équipement précédement équiper
@@ -53,8 +59,12 @@ public class Equipement : MonoBehaviour
             }
 
             equipementLibraryItem.ItemPrefab.SetActive(false);
-
         }
+
+        //Retire des point d'amure lorque l'on s'équipe d'un item
+        //Remove tack points when equipping an item
+        _playerStats.CurrentArmorPoints -= itemToDisable.ArmorPoints;
+
         Inventory._instance.AddItem(itemToDisable);
 
     }
@@ -105,6 +115,12 @@ public class Equipement : MonoBehaviour
                 _feetsSlotImage.sprite = Inventory._instance.EmptySlotVisual;
                 break;
 
+            case EquipementType.weapon:
+                currentItem = _equipementWeaponItem;
+                _equipementWeaponItem = null;
+                _weaponSlotImage.sprite = Inventory._instance.EmptySlotVisual;
+                break;
+
         }
 
         EquipementLibraryItem equipementLibraryItem = _equipementLibrary.Content.Where(elem => elem.ItemsData == currentItem).First();
@@ -118,8 +134,11 @@ public class Equipement : MonoBehaviour
             equipementLibraryItem.ItemPrefab.SetActive(false);
 
         }
-        Inventory._instance.AddItem(currentItem);
+        //Retire des point d'amure lorque l'on s'équipe d'un item
+        //Remove tack points when equipping an item
+        _playerStats.CurrentArmorPoints -= currentItem.ArmorPoints;
 
+        Inventory._instance.AddItem(currentItem);
         Inventory._instance.RefreshContent();
     }
     #endregion
@@ -146,6 +165,10 @@ public class Equipement : MonoBehaviour
         _feetsDesequipButton.onClick.RemoveAllListeners();
         _feetsDesequipButton.onClick.AddListener(delegate { DesequipeEquipement(EquipementType.feets); });
         _feetsDesequipButton.gameObject.SetActive(_equipementFeetItem);
+
+        _WeaponDesequipButton.onClick.RemoveAllListeners();
+        _WeaponDesequipButton.onClick.AddListener(delegate { DesequipeEquipement(EquipementType.weapon); });
+        _WeaponDesequipButton.gameObject.SetActive(_equipementWeaponItem);
     }
     #endregion
 
@@ -155,6 +178,9 @@ public class Equipement : MonoBehaviour
     public void EquipeAction()
     {
         print("Equipe Item : " + _itemsActionSystem.ItemCurrentlySelected.Name);
+
+        //Recherche dans la librairie d'équipement l'item a équiper
+        //Search in the equipment library for the item to equip
         EquipementLibraryItem equipementLibraryItem = _equipementLibrary.Content.Where(elem => elem.ItemsData == _itemsActionSystem.ItemCurrentlySelected).First();
         if (equipementLibraryItem != null)
         {
@@ -168,26 +194,37 @@ public class Equipement : MonoBehaviour
                     _headSlotImage.sprite = _itemsActionSystem.ItemCurrentlySelected.Visual;
                     _equipementHeadItem = _itemsActionSystem.ItemCurrentlySelected;
                     break;
+
                 case EquipementType.Chest:
                     DisablePreviousEquipedEquipement(_equipementChestItem);
                     _chestSlotImage.sprite = _itemsActionSystem.ItemCurrentlySelected.Visual;
                     _equipementChestItem = _itemsActionSystem.ItemCurrentlySelected;
                     break;
+
                 case EquipementType.hands:
                     DisablePreviousEquipedEquipement(_equipementHandsItem);
                     _handsSlotImage.sprite = _itemsActionSystem.ItemCurrentlySelected.Visual;
                     _equipementHandsItem = _itemsActionSystem.ItemCurrentlySelected;
                     break;
+
                 case EquipementType.legs:
                     DisablePreviousEquipedEquipement(_equipementLegsItem);
                     _legsSlotImage.sprite = _itemsActionSystem.ItemCurrentlySelected.Visual;
                     _equipementLegsItem = _itemsActionSystem.ItemCurrentlySelected;
                     break;
+
                 case EquipementType.feets:
                     DisablePreviousEquipedEquipement(_equipementFeetItem);
                     _feetsSlotImage.sprite = _itemsActionSystem.ItemCurrentlySelected.Visual;
                     _equipementFeetItem = _itemsActionSystem.ItemCurrentlySelected;
                     break;
+
+                case EquipementType.weapon:
+                    DisablePreviousEquipedEquipement(_equipementWeaponItem);
+                    _weaponSlotImage.sprite = _itemsActionSystem.ItemCurrentlySelected.Visual;
+                    _equipementWeaponItem = _itemsActionSystem.ItemCurrentlySelected;
+                    break;
+
                 default:
                     break;
             }
@@ -197,6 +234,11 @@ public class Equipement : MonoBehaviour
             }
 
             equipementLibraryItem.ItemPrefab.SetActive(true);
+
+            //Rajoute des point d'amure lorque l'on s'équipe d'un item
+            //Add tack points when equipping an item
+            _playerStats.CurrentArmorPoints += _itemsActionSystem.ItemCurrentlySelected.ArmorPoints;
+
             Inventory._instance.RemoveItem(_itemsActionSystem.ItemCurrentlySelected);
 
         }

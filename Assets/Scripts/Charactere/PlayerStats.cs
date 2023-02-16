@@ -7,6 +7,14 @@ using UnityEngine.UI;
 
 public class PlayerStats : MonoBehaviour
 {
+    [Header("MoveBehaviour Script references")]
+    [SerializeField]MoveBehaviour _playerMouvementScript;
+    
+    [Header("AIMBehaviour Script references")]
+    [SerializeField]AimBehaviourBasic _PlayeeAimBehaviourBasic;
+
+    [Header("Other elements references")]
+    [SerializeField] Animator _animator;
 
     [Header("Health")]
     [SerializeField] float _maxHealth = 100f;
@@ -28,6 +36,13 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] Image _thirstBarFill;
     [SerializeField] float _thirstDecreaseRate;
 
+    [Header("Armor Points")]
+    [SerializeField] float _currentArmorPoints;
+
+    private bool _isDead = false;
+
+    public float CurrentArmorPoints { get => _currentArmorPoints; set => _currentArmorPoints = value; }
+    public bool IsDead { get => _isDead; set => _isDead = value; }
 
 
 
@@ -47,7 +62,7 @@ public class PlayerStats : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.K))
         {
-            TakeDamage(15f);
+            TakeDamage(50f);
         }
     }
 
@@ -56,23 +71,46 @@ public class PlayerStats : MonoBehaviour
     //Method that manages the player's damage taking
     public void TakeDamage(float damage, bool overTime = false)
     {
-        if(overTime)
+        if (overTime)
         {
-        _currentHealth -= damage * Time.deltaTime;
-
+            //perte de la vie au cours du temps qui passe(faim/soif)
+            //loss of life over time (hunger/thirst)
+            _currentHealth -= damage * Time.deltaTime;
         }
         else
         {
-            _currentHealth -= damage;
+            //perte de la vie via des dégâts classique
+            // loss of life via classic damage
+            _currentHealth -= (damage) * (1 - (_currentArmorPoints / 100));
         }
 
-        if(_currentHealth <=0)
+        if (_currentHealth <= 0 && !_isDead)
         {
-            Debug.Log("Player died");
+            Die();
         }
 
         UpdateHealthBarFill();
     }
+    #endregion
+
+    #region Die
+    void Die()
+    {
+        Debug.Log("Player died");
+        _isDead = true;
+
+        //On bloque le mouvement du joueur + mode inspection
+        //We block the movement of the player + inspection mode
+        _playerMouvementScript.CanMove = false;
+        _PlayeeAimBehaviourBasic.enabled = false;
+
+        //On bloque la diminution des barres de faim/soif 
+        //We block the reduction of hunger/thirst bars
+        _hungerDecreaseRate = 0;
+        _thirstDecreaseRate = 0;
+        _animator.SetTrigger("Die");
+    }
+
     #endregion
 
     #region UpdateHealthBarFill
@@ -93,17 +131,17 @@ public class PlayerStats : MonoBehaviour
 
         //Dimunue la faim/ soif au fil du temps
         //Decreases hunger/thirst over time
-        _currentHunger -=  _hungerDecreaseRate * Time.deltaTime;
+        _currentHunger -= _hungerDecreaseRate * Time.deltaTime;
         _currentThirst -= _thirstDecreaseRate * Time.deltaTime;
 
         //On empeche de passer dans le negatif
         //We prevent going into the negative
         _currentHunger = _currentHunger < 0 ? 0 : _currentHunger;
-        _currentThirst = _currentThirst <0 ? 0 : _currentThirst;
+        _currentThirst = _currentThirst < 0 ? 0 : _currentThirst;
 
         //Met a jour les visuels
         //Update the visuals
-        _hungerBarFill.fillAmount = _currentHunger/ _maxHunger;
+        _hungerBarFill.fillAmount = _currentHunger / _maxHunger;
         _thirstBarFill.fillAmount = _currentThirst / _maxThirst;
 
         //Si la faim / soif est a zero alors on retire des pts de vie (x2 si les deux barres sont a zero)
