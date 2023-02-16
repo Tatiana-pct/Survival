@@ -39,6 +39,9 @@ public class ItemsData : ScriptableObject
 
     [Header("Armor Stats")]
     [SerializeField] float _armorPoints;
+    
+    [Header("Attack Stats")]
+    [SerializeField] float _attackPoints;
 
 
 
@@ -59,4 +62,5 @@ public class ItemsData : ScriptableObject
     public float HungerEffect { get => _hungerEffect; set => _hungerEffect = value; }
     public float ThristEffect { get => _thristEffect; set => _thristEffect = value; }
     public float ArmorPoints { get => _armorPoints; set => _armorPoints = value; }
+    public float AttackPoints { get => _attackPoints; set => _attackPoints = value; }
 }

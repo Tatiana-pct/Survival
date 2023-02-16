@@ -6,12 +6,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class InteractBeheviour : MonoBehaviour
-{   
+{
+    [Header("Inventory Script references")]
     [SerializeField]private Inventory _inventory;
+
+    [Header("Animator references")]
     [SerializeField]private Animator _animator;
+
+    [Header("MoveBehaviour Script references")]
     [SerializeField]MoveBehaviour _moveBehaviour;
+
+    [Header("Equipement Script references")]
+    [SerializeField] Equipement _equipementSystem;
+
+    [Header("EquipementLibrary Script references")]
+    [SerializeField] EquipementLibrary _equipementLibrary;
 
     [Header("Tools Visual")]
     [SerializeField]GameObject _pickAxeVisual;
@@ -22,6 +34,8 @@ public class InteractBeheviour : MonoBehaviour
     private Harvestable _currentHarvestable;
     private Tool _currentTool;
     private bool _isBusy;
+
+    public bool IsBusy { get => _isBusy; set => _isBusy = value; }
 
     #region DoPickUp
     //Methode permettant de collecter des items
@@ -147,6 +161,20 @@ public class InteractBeheviour : MonoBehaviour
     #region EnabledToolGameObjectFromEnum
     private void EnabledToolGameObjectFromEnum(Tool toolType, bool enabled = true)
     {
+        //Recherche de l'item dans la librairy
+        //Search for the item in the library
+        EquipementLibraryItem equipementLibraryItem = _equipementLibrary.Content.Where(elem => elem.ItemsData == _equipementSystem.EquipementWeaponItem).First();
+
+        if (equipementLibraryItem != null)
+        {
+            for (int i = 0; i < equipementLibraryItem.ElementsToDisable.Length; i++)
+            {
+                equipementLibraryItem.ElementsToDisable[i].SetActive(enabled);
+            }
+
+            equipementLibraryItem.ItemPrefab.SetActive(!enabled);
+        }
+
         switch (toolType)
         {
             case Tool.PickAxe:

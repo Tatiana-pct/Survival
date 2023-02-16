@@ -9,9 +9,6 @@ public class PlayerStats : MonoBehaviour
 {
     [Header("MoveBehaviour Script references")]
     [SerializeField]MoveBehaviour _playerMouvementScript;
-    
-    [Header("AIMBehaviour Script references")]
-    [SerializeField]AimBehaviourBasic _PlayeeAimBehaviourBasic;
 
     [Header("Other elements references")]
     [SerializeField] Animator _animator;
@@ -102,7 +99,6 @@ public class PlayerStats : MonoBehaviour
         //On bloque le mouvement du joueur + mode inspection
         //We block the movement of the player + inspection mode
         _playerMouvementScript.CanMove = false;
-        _PlayeeAimBehaviourBasic.enabled = false;
 
         //On bloque la diminution des barres de faim/soif 
         //We block the reduction of hunger/thirst bars

@@ -15,9 +15,12 @@ public class UiManager : MonoBehaviour
 
     [SerializeField] GameObject[] _UiPanel;
     [SerializeField] ThirdPersonOrbitCamBasic _playerCamScript;
+    [SerializeField] bool _atLestOnePanelOpend;
 
     private float _defaultHorizontalAnimgSpeed;
     private float _defaultVerticalAnimgSpeed;
+
+    public bool AtLestOnePanelOpend { get => _atLestOnePanelOpend; set => _atLestOnePanelOpend = value; }
 
 
     // Start is called before the first frame update
@@ -30,7 +33,9 @@ public class UiManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(_UiPanel.Any((panel)=> panel == panel.activeSelf))
+        _atLestOnePanelOpend = _UiPanel.Any((panel) => panel == panel.activeSelf);
+
+        if (_atLestOnePanelOpend)
         {
             _playerCamScript.horizontalAimingSpeed = 0;
             _playerCamScript.verticalAimingSpeed = 0;

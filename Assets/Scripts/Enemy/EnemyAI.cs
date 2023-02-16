@@ -15,6 +15,8 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] PlayerStats _playerStats;
 
     [Header("Enemy Stats")]
+    [SerializeField] float _maxHealth;
+    [SerializeField] float _currentHealth;
     [SerializeField] float _walkSpeed;
     [SerializeField] float _chaseSpeed;
     [SerializeField] float _detectionRaduis;
@@ -31,13 +33,16 @@ public class EnemyAI : MonoBehaviour
 
     private bool _HasDestination;
     private bool _isAttacking;
+    private bool _isDead;
 
 
     private void Awake()
     {
         Transform playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         _player = playerTransform;
-        _playerStats = playerTransform.GetComponent<PlayerStats>(); 
+        _playerStats = playerTransform.GetComponent<PlayerStats>();
+
+        _currentHealth = _maxHealth;
     }
 
     void Update()
@@ -75,6 +80,7 @@ public class EnemyAI : MonoBehaviour
         _animator.SetFloat("Speed", _agent.velocity.magnitude);
     }
 
+    #region GetNewDestination
     IEnumerator GetNewDestination()
     {
         _HasDestination = true;
@@ -91,7 +97,9 @@ public class EnemyAI : MonoBehaviour
         _HasDestination = false;
 
     }
+    #endregion
 
+    #region AttackPlayer
     //Couroutine permettant à l'ours d'attaquer le joueur
     //Couroutine allowing the bear to attack the player
     IEnumerator AttackPlayer()
@@ -109,12 +117,43 @@ public class EnemyAI : MonoBehaviour
 
         yield return new WaitForSeconds(_attackDelay);
 
+        if(_agent.enabled)
+        {
         //Reactive le mouvement de l'ours
         //Reactivate bear movement
         _agent.isStopped = false;
+
+        }
         _isAttacking = false;
 
     }
+    #endregion
+    //Methode responsable de la perte des point de vie l'AI
+    //Method responsible for the loss of the AI's life points
+    #region TakeDammage
+    public void TakeDammage(float damages)
+    {
+        if (_isDead)
+        {
+            return;
+        }
+        _currentHealth -= damages;
+
+        if (_currentHealth <= 0f)
+        {
+            _isDead = true;
+            _animator.SetTrigger("Die");
+            _agent.enabled = false;
+            enabled = false;
+        }
+        else
+        {
+            _animator.SetTrigger("GetHit");
+
+        }
+    }
+
+    #endregion 
 
     private void OnDrawGizmos()
     {

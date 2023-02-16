@@ -50,6 +50,8 @@ public class Equipement : MonoBehaviour
             return;
         }
 
+        //Recherche de l'item dans la librairy
+        //Search for the item in the library
         EquipementLibraryItem equipementLibraryItem = _equipementLibrary.Content.Where(elem => elem.ItemsData == itemToDisable).First();
         if (equipementLibraryItem != null)
         {
