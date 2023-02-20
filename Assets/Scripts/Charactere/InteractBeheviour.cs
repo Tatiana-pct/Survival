@@ -163,7 +163,7 @@ public class InteractBeheviour : MonoBehaviour
     {
         //Recherche de l'item dans la librairy
         //Search for the item in the library
-        EquipementLibraryItem equipementLibraryItem = _equipementLibrary.Content.Where(elem => elem.ItemsData == _equipementSystem.EquipementWeaponItem).First();
+        EquipementLibraryItem equipementLibraryItem = _equipementLibrary.Content.Where(elem => elem.ItemsData == _equipementSystem.EquipementWeaponItem).FirstOrDefault();
 
         if (equipementLibraryItem != null)
         {

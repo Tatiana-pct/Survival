@@ -66,7 +66,7 @@ public class AttackBehaviour : MonoBehaviour
     }
     #endregion
 
-    #region
+    #region CanAttack
     /*
      Pour attaquer on doit:
      Avoir une arme équiper

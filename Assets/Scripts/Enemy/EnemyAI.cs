@@ -128,9 +128,10 @@ public class EnemyAI : MonoBehaviour
 
     }
     #endregion
+
+    #region TakeDammage
     //Methode responsable de la perte des point de vie l'AI
     //Method responsible for the loss of the AI's life points
-    #region TakeDammage
     public void TakeDammage(float damages)
     {
         if (_isDead)

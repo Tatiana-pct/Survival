@@ -107,7 +107,6 @@ public class Recipe : MonoBehaviour
     }
     #endregion
 
-
     #region CraftItem
     //Methode qui ajoute l'élement crafter a l'inventaire
     //Method that adds the crafter item to the inventory
